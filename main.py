@@ -46,7 +46,7 @@ class Caching:
     def set(self, data: DownloadAsync,size: int):
         keys = hex(int(time.time().__str__().replace('.','')))
         self.data.update({keys:{
-            'expired': int(time.time() + 10 * 10), #10 menute
+            'expired': int(time.time() + 60 * 10), #10 menute
             'data': data,
             'size': size
         }})
