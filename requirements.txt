@@ -1,0 +1,4 @@
+aiohttp
+aiogram
+git+https://github.com/krypton-byte/tiktok-downloader
+python-dotenv==0.20.0
