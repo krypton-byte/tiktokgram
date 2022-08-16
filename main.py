@@ -39,12 +39,15 @@ class DownloadFBVid(DownloadFB):
     async def on_progress(self, binaries):
         self.io.write(binaries)
         self.total += binaries.__len__()
-        if time.time() - self.timestamp > 1.5: # flood control
+        if time.time() - self.timestamp > 1.5:  # flood control
             self.timestamp = time.time()
             await self.message.edit_text(
-                'Downloading..... '+convert_size(
-                    self.total)+'\nPercentage: %s' % str(int(
-                        self.total/self.total_length * 100))+'%')
+                (
+                    'Downloading..... '+convert_size(
+                        self.total)+'\nPercentage: %s' % str(int(
+                            self.total/self.total_length * 100))+'%'
+                ) if self.total_length else (
+                    'Downloading..... '+convert_size(self.total_length)))
 
     async def on_finish(self, client, response):
         self.io.seek(0)
