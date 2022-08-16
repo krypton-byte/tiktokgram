@@ -28,6 +28,7 @@ class DownloadFBVid(DownloadFB):
         self.q = q
         self.io = BytesIO()
         self.message = None
+        self.timestamp = 0
         self.total = 0
         self.total_length = length
 
@@ -38,10 +39,12 @@ class DownloadFBVid(DownloadFB):
     async def on_progress(self, binaries):
         self.io.write(binaries)
         self.total += binaries.__len__()
-        await self.message.edit_text(
-            'Downloading..... '+convert_size(
-                self.total)+'\nPercentage: %s' % str(int(
-                    self.total/self.total_length * 100))+'%')
+        if time.time() - self.timestamp > 1.5: # flood control
+            self.timestamp = time.time()
+            await self.message.edit_text(
+                'Downloading..... '+convert_size(
+                    self.total)+'\nPercentage: %s' % str(int(
+                        self.total/self.total_length * 100))+'%')
 
     async def on_finish(self, client, response):
         self.io.seek(0)
@@ -55,6 +58,7 @@ class Download(DownloadCallback):
         super().__init__()
         self.q = q
         self.io = BytesIO()
+        self.timestamp = 0
         self.message = None
         self.total = 0
         self.total_length = length
@@ -66,10 +70,12 @@ class Download(DownloadCallback):
     async def on_progress(self, binaries):
         self.io.write(binaries)
         self.total += binaries.__len__()
-        await self.message.edit_text(
-            'Downloading..... '+convert_size(
-                self.total)+'\nPercentage: %s' % str(int(
-                    self.total/self.total_length * 100))+'%')
+        if time.time() - self.timestamp > 1.5:
+            self.timestamp = time.time()
+            await self.message.edit_text(
+                'Downloading..... '+convert_size(
+                    self.total)+'\nPercentage: %s' % str(int(
+                        self.total/self.total_length * 100))+'%')
 
     async def on_finish(self, client, response):
         self.io.seek(0)
